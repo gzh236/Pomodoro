@@ -1,0 +1,35 @@
+<%- include ('./partials/header.ejs') -%>
+
+<!-- newForm -->
+<div class="mb-3">
+  <label for="taskName" class="form-label"></label>
+  <input
+    type="text"
+    class="form-control"
+    id="taskName"
+    placeholder="Task name"
+  />
+</div>
+</div>
+<div class="mb-3">
+  <label for="description" class="form-label"></label>
+  <textarea
+    class="form-control"
+    id="description"
+    placeholder="Description of task (Optional)"
+  ></textarea>
+</div>
+<!-- Duration form selector -->
+<select class="form-select" aria-label="Default select example">
+    <option selected>Select the duration assigned to your task</option>
+    <option value="1">15 minutes</option>
+    <option value="2">30 minutes</option>
+    <option value="3">45 minutes</option>
+    <option value="4">60 minutes</option>
+    <option value="5">90 minutes</option>
+  </select>
+<form type="POST" action="/todos">
+  <button type="submit" class="btn btn-success">Create Task</button>
+</form>
+
+<%- include ('./partials/footer.ejs') -%>

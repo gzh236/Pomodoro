@@ -1,0 +1,19 @@
+<%- include ('./partials/header.ejs') -%>
+
+<div id="index-intro">
+  <h5>Add your tasks to the to-do list below:</h5>
+  <ul class="todos">
+    <% tasks.forEach(task => { %>
+    <li class="list-item">Date Added:<%= task.dateTime %></li>
+    <li class="list-item"><%= task.name %></li>
+    <% }) %>
+  </ul>
+  <form type="GET" action="/todos/new">
+    <button type="submit" class="btn btn-success">Create New Task</button>
+  </form>
+  <!-- add a plus button that redirects to a newForm page -->
+  <!-- POST the details of the new task to the DB -->
+</div>
+<div class="container"></div>
+
+<%- include ('./partials/footer.ejs') -%>
