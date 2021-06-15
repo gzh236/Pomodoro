@@ -1,0 +1,19 @@
+<%- include('./partials/header.ejs') %> <%- include('./partials/timer.ejs'),
+{todoStartTime, todoDuration, todo, todoPauseTime} %>
+
+<div class="container">
+  <div id="pomodoro">
+    <h3 id="timer-display"></h3>
+  </div>
+  <div class="btn-group">
+    <button id="pause-btn" class="btn btn-outline-warning" type="submit">
+      Pause
+    </button>
+
+    <form type="DELETE" action="/todos">
+      <button class="btn btn-outline-danger" type="submit">Delete</button>
+    </form>
+  </div>
+</div>
+
+<%- include('./partials/footer.ejs') %>

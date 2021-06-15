@@ -1,7 +1,34 @@
-.header {
+.header,
+#index-intro {
   text-align: center;
 }
 
-#index-intro {
+.todos {
+  list-style: none;
+}
+
+#showTaskName,
+#showTaskDescription {
   text-align: center;
+  padding: 35px;
+}
+
+.btn-toolbar {
+  text-align: center;
+}
+
+#start-btn,
+#edit-btn,
+#delete-btn {
+  margin: 10px;
+}
+
+#timer-display {
+  text-align: center;
+  margin: 25px;
+}
+
+.hidden {
+  visibility: hidden;
+  max-height: 0;
 }

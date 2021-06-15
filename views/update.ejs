@@ -1,4 +1,4 @@
-<%- include ('./partials/header.ejs') -%>
+<%- include ('./partials/header.ejs') %>
 
 <!-- newForm -->
 
@@ -10,7 +10,7 @@
             class="form-control"
             id="name"
             name="name"
-            placeholder="Task name"
+            value="<%= todo.name %>"
         />
         
     <div class="mb-3">
@@ -20,7 +20,7 @@
       class="form-control"
       id="description"
       name="description"
-      placeholder="Description of task (Optional)"
+      value="<%= todo.description %>"
     ></input>
     </div>
 
@@ -28,7 +28,7 @@
 <!-- Duration form selector deprecated-->
 
     <div class="mb-3">
-        <label for="duration" class="form-label">Duration of task (in minutes)</label>
+        <label for="duration" class="form-label">Edit the duration of task (in minutes)</label>
         <select name="duration" id="duration" class="form-select">
             <option value="" selected>Choose the duration to be assigned to your task</option>
             <option value="15">15</option>
@@ -42,4 +42,4 @@
     </form>
 </div>
 
-<%- include ('./partials/footer.ejs') -%>
+<%- include ('./partials/footer.ejs') %>

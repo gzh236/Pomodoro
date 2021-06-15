@@ -1,19 +1,37 @@
 <%- include ('./partials/header.ejs') -%>
 
-<div id="index-intro">
-  <h5>Add your tasks to the to-do list below:</h5>
-  <ul class="todos">
-    <% tasks.forEach(task => { %>
-    <li class="list-item">Date Added:<%= task.dateTime %></li>
-    <li class="list-item"><%= task.name %></li>
-    <% }) %>
-  </ul>
+<div class="container">
+  <% if (tasks.length === 0) { %>
+  <h5 class="add-task-msg">Start adding tasks to your to-do list</h5>
+  <% } %>
+  <h3>To-do list:</h3>
+  <table class="table table-borderless table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Date & Time</th>
+        <th scope="col">Task</th>
+        <th scope="col">Description</th>
+        <th scope="col">Duration</th>
+        <th scope="col">View task</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% tasks.forEach(task => { %>
+      <tr>
+        <td><%= task.date %></td>
+        <td><%= task.name %></td>
+        <td><%= task.description %></td>
+        <td><%= task.duration %> minutes</td>
+        <td>
+          <a href="/todos/<%= task.slug %>"><i class="fas fa-stopwatch"></i></a>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
   <form type="GET" action="/todos/new">
-    <button type="submit" class="btn btn-success">Create New Task</button>
+    <button type="submit" class="btn btn-primary">Add New Task</button>
   </form>
-  <!-- add a plus button that redirects to a newForm page -->
-  <!-- POST the details of the new task to the DB -->
 </div>
-<div class="container"></div>
 
 <%- include ('./partials/footer.ejs') -%>

@@ -1,0 +1,31 @@
+<%- include('./partials/header.ejs') %>
+<!-- Details of selectedTask -->
+<div class="container">
+  <h4 id="showTaskName"><%= selectedTask.name %></h4>
+  <span id="showTaskDescription">
+    <p><%= selectedTask.description %></p>
+  </span>
+
+  <div class="btn-toolbar justify-content-center">
+    <form
+      action="/todos/<%= selectedTask.slug %>/start?_method=PATCH"
+      method="POST"
+    >
+      <button type="submit" class="btn btn-outline-success" id="start-btn">
+        Start
+      </button>
+    </form>
+    <form action="/todos/<%= selectedTask.slug %>/edit" method="GET">
+      <button type="submit" class="btn btn-outline-warning" id="edit-btn">
+        Edit
+      </button>
+    </form>
+    <form action="/todos" method="DELETE">
+      <button type="submit" class="btn btn-outline-danger" id="delete-btn">
+        Delete
+      </button>
+    </form>
+  </div>
+</div>
+
+<%- include('./partials/footer.ejs') %>
