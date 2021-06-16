@@ -1,0 +1,33 @@
+<%- include('./partials/header.ejs') %>
+<div class="container">
+  <h1 class="form-header">Login</h1>
+
+  <div class="form">
+    <form method="POST" action="/todos">
+      <label for="name" class="form-label">Username:</label>
+      <input
+        type="text"
+        class="form-control mb-3"
+        id="username"
+        name="username"
+        placeholder="Enter your username"
+        required
+      />
+
+      <label for="description" class="form-label">Password:</label>
+      <input
+        type="password"
+        class="form-control mb-3"
+        id="password"
+        name="password"
+        placeholder="Enter your password"
+        required
+      />
+
+      <button id="login-btn" class="btn btn-outline-primary" type="submit">
+        Login
+      </button>
+    </form>
+  </div>
+</div>
+<%- include('./partials/footer.ejs') %>

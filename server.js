@@ -9,7 +9,7 @@ const bcrypt = require("bcrypt");
 const ProgressBar = require("progressbar.js");
 
 const passport = require("passport"),
-  LocalStrategy = require("passport-local).Strategy");
+  LocalStrategy = require("passport-local").Strategy;
 
 const mongoose = require("mongoose"),
   mongoURI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}`;
@@ -19,16 +19,18 @@ const PORT = process.env.PORT || 3000;
 
 const taskController = require("./controllers/tasks_controllers");
 const ToDoModel = require("./models/tasks");
+const UserModel = require("./models/users");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(__dirname + "public"));
+app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.use(
   session({
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
+    cookie: { path: "/", secure: false, maxAge: 3600000 },
   })
 );
 app.use(methodOverride("_method"));
@@ -37,10 +39,22 @@ app.use(methodOverride("_method"));
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.serializeUser(function (user, done) {});
+// serialise the user to support login sessions
+passport.serializeUser(function (user, done) {
+  done(null, userid);
+});
+
+// ID deserialised which will be used to find the user (req.user)
+passport.deserializeUser(function (id, done) {
+  // Setups user model
+  UserModel.findById(id, function (err, user) {
+    done(err, user);
+  });
+});
 
 passport.use(
   new LocalStrategy(function (username, password, done) {
+    // find user by username
     User.findOne({ username: username }, function (err, user) {
       if (err) {
         return done(err);
@@ -48,13 +62,88 @@ passport.use(
       if (!user) {
         return done(null, false, { message: "Incorrect username." });
       }
-      if (!user.validPassword(password)) {
-        return done(null, false, { message: "Incorrect password." });
-      }
-      return done(null, user);
+
+      // validate pw
+      bcrypt.compare(password, user.password, function (err, res) {
+        if (err) {
+          return done(err);
+        }
+        // if pw doesnt match, return an error
+        if (res === false) {
+          return done(null, false, { message: "Incorrect password" });
+        }
+        // successful match
+        return done(null, user);
+      });
     });
   })
 );
+
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/");
+}
+
+// APP ROUTES //
+
+// index
+app.get("/todos", isLoggedIn, taskController.index);
+
+// create
+app.post("/todos", isLoggedIn, taskController.create);
+
+// delete
+app.delete("/todos/:slug/delete", isLoggedIn, taskController.delete);
+
+// newForm
+app.get("/todos/new", isLoggedIn, taskController.newForm);
+
+// show
+app.get("/todos/:slug", isLoggedIn, taskController.show);
+
+// update;
+app.patch("/todos/:slug", isLoggedIn, taskController.update);
+
+// pause, resume
+app.patch("/todos/:slug/pause", isLoggedIn, taskController.pause);
+app.patch("/todos/:slug/resume", isLoggedIn, taskController.resume);
+
+// start
+app.get("/todos/:slug/start", isLoggedIn, taskController.getTimer);
+app.patch("/todos/:slug/start", isLoggedIn, taskController.start);
+
+// edit
+app.get("/todos/:slug/edit", isLoggedIn, taskController.edit);
+
+// USER AUTH ROUTES //
+
+// login-form
+app.get("/", (req, res) => {
+  res.render("user-login");
+});
+
+// login handled by passportjs
+app.post(
+  "/",
+  passport.authenticate("local", {
+    successRedirect: "/todos",
+    failureRedirect: "/",
+    failureFlash: true,
+  })
+);
+
+// register-form
+app.get("/register", (req, res) => {
+  res.render("user-registration");
+});
+
+bcrypt.genSalt(10, function (err, salt) {
+  if (err) {
+    return;
+  }
+});
 
 mongoose.set("useFindAndModify", false);
 mongoose.set("useCreateIndex", true);
@@ -69,34 +158,3 @@ mongoose
     console.log(err);
     console.log(`server error`);
   });
-
-// ROUTES //
-
-// index
-app.get("/todos", taskController.index);
-
-// create
-app.post("/todos", taskController.create);
-
-// delete
-app.delete("/todos/:slug/delete", taskController.delete);
-
-// newForm
-app.get("/todos/new", taskController.newForm);
-
-// show
-app.get("/todos/:slug", taskController.show);
-
-// update;
-app.patch("/todos/:slug", taskController.update);
-
-// pause, resume
-app.patch("/todos/:slug/pause", taskController.pause);
-app.patch("/todos/:slug/resume", taskController.resume);
-
-// start
-app.get("/todos/:slug/start", taskController.getTimer);
-app.patch("/todos/:slug/start", taskController.start);
-
-// edit
-app.get("/todos/:slug/edit", taskController.edit);
