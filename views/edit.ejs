@@ -1,7 +1,7 @@
 <%- include ('./partials/header.ejs') -%>
 
 <div class="container">
-    <form method="POST" action="/todos/<%= todo.slug %>?_method=PATCH">
+    <form action="/todos/<%= todo.slug %>?_method=PATCH" method="POST" >
          <label for="name" class="form-label"></label>
          <input
             type="text"
@@ -33,7 +33,7 @@
                 <option value="90">90</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">Edit Task</button>
+        <button type="submit" class="btn btn-outline-primary">Edit Task</button>
     </form>
 </div>
 

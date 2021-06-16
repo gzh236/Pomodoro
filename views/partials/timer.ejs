@@ -1,22 +1,29 @@
 <script>
-    window.onload = function () {
-    let startTime = <%= todoStartTime %>;
-    let duration = <%= todoDuration %>;
-    let endTime  = startTime + (duration * 60 * 1000)
-    let remainingTime = endTime - Date.now()
 
-    let pauseTime;
+  window.onload = function () {
+  let startTime = <%= todoStartTime %>;
+  let duration = <%= todoDuration %>;
+  let pauseTime = <%= todoPauseTime %>;
+  let timeLeft;
 
-    let resumeBtn = document.createElement('button')
-    resumeBtn.setAttribute('class','hidden btn btn-outline-success')
-    resumeBtn.innerText = 'Resume'
+  let endTime  = startTime + (duration * 60 * 1000)
+  console.log(endTime)
+  let remainingTime = endTime - startTime
 
-      let btnGrp = document.querySelector(".btn-group")
-      btnGrp.appendChild(resumeBtn)
+  let pauseBtn = document.getElementById('pause-btn')
+  let resumeBtn = document.getElementById('resume-btn')
+  resumeBtn.classList.add('hidden')
 
 
-      const timerSpan = document.getElementById('timer-display')
-        let countdown = setInterval(() => {
+  const timerSpan = document.getElementById('timer-display')
+  let countdown = setInterval(() => {
+
+        if (pauseTime !== 0) {
+          clearInterval(countdown)
+          pauseBtn.classList.add('hidden')
+          resumeBtn.classList.remove('hidden')
+        }
+
         let minutes = Math.floor(remainingTime / 60000)
         minutes = minutes < 10 ? "0" + minutes : minutes;
 
@@ -29,55 +36,16 @@
           minutes = seconds = 0
           timerSpan.innerText = "0" + minutes + ":" + "0" + seconds
       }
-      }, 1000)
+    }, 1000)
 
-
-      // pause functionality
-      const pauseBtn = document.getElementById('pause-btn')
-      pauseBtn.addEventListener('click', function () {
-
-        clearInterval(countdown)
-
-        pauseTime = Date.now()
-
-        pauseBtn.classList.add('hidden')
-        resumeBtn.classList.remove('hidden')
-        console.log(pauseTime)
-
-        return pauseTime
-
-      })
-
-      // resume
-      resumeBtn.addEventListener('click', function () {
-        remainingTime = endTime - pauseTime
-
-        countdown = setInterval(() => {
-          minutes = Math.floor(remainingTime / 60000)
-          minutes = minutes < 10 ? "0" + minutes : minutes;
-
-          seconds = Math.floor((remainingTime % 60000) / 1000)
-          seconds = seconds < 10 ? "0" + seconds : seconds;
-
-          timerSpan.innerText = minutes + ":" + seconds
-          remainingTime -= 1000
-
-          if (remainingTime <= 0) {
-            minutes = seconds = 0
-            timerSpan.innerText = "0" + minutes + ":" + "0" + seconds
-        }
-        }, 1000)
-        pauseBtn.classList.remove('hidden')
-        resumeBtn.classList.add('hidden')
-      })
-
-      if (remainingTime <= 0) {
+    if (remainingTime <= 0 ) {
+      pauseBtn.classList.add('hidden')
+      pauseBtn.classList.add('hidden')
       let completionMessage = document.createElement('h2')
       completionMessage.innerText = `Congratulations on focusing and completing the task!`
       let timerDiv = document.getElementById("pomodoro")
       timerDiv.appendChild(completionMessage)
       return
     }
-
   }
 </script>

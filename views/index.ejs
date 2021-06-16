@@ -21,7 +21,7 @@
         <td><%= task.date %></td>
         <td><%= task.name %></td>
         <td><%= task.description %></td>
-        <td><%= task.duration %> minutes</td>
+        <td><%= Math.round(task.duration) %> minutes</td>
         <td>
           <a href="/todos/<%= task.slug %>"><i class="fas fa-stopwatch"></i></a>
         </td>
@@ -30,7 +30,13 @@
     </tbody>
   </table>
   <form type="GET" action="/todos/new">
-    <button type="submit" class="btn btn-primary">Add New Task</button>
+    <button
+      type="submit"
+      id="new-task"
+      class="btn btn-outline-primary justify-content-center"
+    >
+      Add New Task
+    </button>
   </form>
 </div>
 

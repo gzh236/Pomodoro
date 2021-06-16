@@ -1,5 +1,5 @@
 <%- include('./partials/header.ejs') %>
-<!-- Details of selectedTask -->
+
 <div class="container">
   <h4 id="showTaskName"><%= selectedTask.name %></h4>
   <span id="showTaskDescription">
@@ -20,7 +20,10 @@
         Edit
       </button>
     </form>
-    <form action="/todos" method="DELETE">
+    <form
+      action="/todos/<%= selectedTask.slug %>/delete?_method=DELETE"
+      method="POST"
+    >
       <button type="submit" class="btn btn-outline-danger" id="delete-btn">
         Delete
       </button>

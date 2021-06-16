@@ -1,6 +1,7 @@
 .header,
 #index-intro {
   text-align: center;
+  margin: 25px;
 }
 
 .todos {
@@ -31,4 +32,28 @@
 .hidden {
   visibility: hidden;
   max-height: 0;
+}
+
+.container {
+  background-color: white;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 100vh;
+}
+
+.body {
+  background-image: url(clouds.png);
+  background-size: cover;
+}
+
+.navbar {
+  background: none;
+}
+
+body {
+  font-family: "Indie Flower";
+  font-size: x-large;
 }

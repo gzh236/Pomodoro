@@ -1,16 +1,15 @@
 const mongoose = require("mongoose");
-const { DateTime } = require("luxon");
 
 const todoSchema = {
   name: { type: String },
-  duration: { type: Number, min: 15, max: 90 },
+  duration: { type: Number },
   description: { type: String },
   date: {
     type: Date,
-    required: true,
   },
   taskStartTime: { type: Number },
-  taskPauseTime: { type: Number },
+  taskPauseTime: { type: Number, default: 0 },
+  taskResumeTime: { type: Number, default: 0 },
   slug: { type: String, required: true, unique: true },
 };
 
