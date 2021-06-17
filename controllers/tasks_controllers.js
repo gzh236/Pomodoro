@@ -5,16 +5,18 @@ const { rearg } = require("lodash");
 module.exports = {
   index: async (req, res) => {
     let tasks = [];
+    let user = req.user;
     try {
       tasks = await TodoModel.find();
-      res.render("index", { tasks });
+      res.render("index", { tasks, user });
     } catch (err) {
       console.log(err);
     }
   },
 
   newForm: (req, res) => {
-    res.render("new");
+    let user = req.user;
+    res.render("new", { user });
   },
 
   create: async (req, res) => {
@@ -29,6 +31,7 @@ module.exports = {
       res.redirect("/todos/new");
       return;
     }
+    let user = req.user;
 
     try {
       let slug = _.kebabCase(req.body.name);
@@ -55,6 +58,7 @@ module.exports = {
 
   show: async (req, res) => {
     // slug validation
+    let user = req.user;
     if (!req.params.slug) {
       // err message
       res.redirect("/todos");
@@ -63,7 +67,7 @@ module.exports = {
 
     try {
       selectedTask = await TodoModel.findOne({ slug: req.params.slug });
-      res.render("show", { selectedTask });
+      res.render("show", { selectedTask, user });
     } catch (err) {
       // err message
       console.log(err);
@@ -72,6 +76,7 @@ module.exports = {
   },
 
   getTimer: (req, res) => {
+    let user = req.user;
     TodoModel.findOne({ slug: req.params.slug })
       .then((taskResp) => {
         res.render("start", {
@@ -80,6 +85,7 @@ module.exports = {
           todoPauseTime: taskResp.taskPauseTime,
           todoResumeTime: taskResp.taskResumeTime,
           todoDuration: taskResp.duration,
+          user,
         });
       })
       .catch((err) => {
@@ -89,6 +95,7 @@ module.exports = {
   },
 
   start: (req, res) => {
+    let user = req.user;
     TodoModel.findOneAndUpdate(
       { slug: req.params.slug },
       {
@@ -107,6 +114,7 @@ module.exports = {
   },
 
   pause: async (req, res) => {
+    let user = req.user;
     const pauseTime = Date.now();
     try {
       const todo = await TodoModel.findOne({ slug: req.params.slug });
@@ -124,6 +132,7 @@ module.exports = {
   },
 
   resume: async (req, res) => {
+    let user = req.user;
     let resumeTime = Date.now();
     try {
       let todo = await TodoModel.findOne({ slug: req.params.slug });
@@ -138,9 +147,10 @@ module.exports = {
   },
 
   edit: async (req, res) => {
+    let user = req.user;
     try {
       let todo = await TodoModel.findOne({ slug: req.params.slug });
-      res.render("edit", { todo });
+      res.render("edit", { todo, user });
     } catch (err) {
       console.log(err);
       res.redirect("/todos/" + req.params.slug);
@@ -158,7 +168,7 @@ module.exports = {
       console.log(`please fill in all required fields`);
       // flash err msg
     }
-
+    let user = req.user;
     try {
       (newSlug = _.kebabCase(req.body.name)),
         await TodoModel.findOneAndUpdate(
@@ -181,6 +191,7 @@ module.exports = {
   },
 
   delete: async (req, res) => {
+    let user = req.user;
     try {
       await TodoModel.deleteOne({ slug: req.params.slug });
       res.redirect("/todos");

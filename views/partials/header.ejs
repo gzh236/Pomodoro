@@ -20,7 +20,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="/style.css" />
     <script
       src="https://cdn.jsdelivr.net/npm/luxon@1.27.0/build/global/luxon.min.js"
       integrity="sha256-cJnCTPRTD3OUjTD4Ml0WEMsmTiLl71arKaZ9DEZJk0o="
@@ -31,7 +31,11 @@
     <nav class="navbar sticky-top navbar-light">
       <div class="container-fluid">
         <a class="navbar-brand" href="/todos">Pomotodoro</a>
-      
+          <% if (user) { %>
+          <div class=" justify-content-end">
+            <a class="navbar-brand justify-content-end" href="/logout">Logout</a>
+          </div>
+           <% } %>   
         </div>
       </div>
     </nav>

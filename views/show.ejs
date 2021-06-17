@@ -7,6 +7,7 @@
   </span>
 
   <div class="btn-toolbar justify-content-center">
+    <% if (!selectedTask.taskStartTime) { %>
     <form
       action="/todos/<%= selectedTask.slug %>/start?_method=PATCH"
       method="POST"
@@ -15,6 +16,20 @@
         Start
       </button>
     </form>
+    <% } %> <% if (selectedTask.taskStartTime) { %>
+    <form
+      action="/todos/<%= selectedTask.slug %>/start?_method=PATCH"
+      method="POST"
+    >
+      <button
+        type="submit"
+        class="btn btn-outline-success"
+        id="show-resume-btn"
+      >
+        Resume
+      </button>
+    </form>
+    <% } %>
     <form action="/todos/<%= selectedTask.slug %>/edit" method="GET">
       <button type="submit" class="btn btn-outline-warning" id="edit-btn">
         Edit

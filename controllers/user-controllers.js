@@ -1,14 +1,16 @@
 const { UserModel } = require("../models/users");
 const bcrypt = require("bcrypt");
-const passport = require("passport");
 
 module.exports = {
-  registrationForm: (req, res) => {
-    res.render("user-registration");
+  registrationForm: async (req, res) => {
+    let user = req.user;
+
+    res.render("user-registration", { user });
   },
 
   register: async (req, res) => {
-    let user;
+    let user = req.user;
+
     try {
       user = await UserModel.findOne({ username: req.body.username });
     } catch (err) {
@@ -38,6 +40,13 @@ module.exports = {
   },
 
   loginForm: (req, res) => {
-    res.render("user-login");
+    let user = req.user;
+
+    res.render("user-login", { user });
+  },
+
+  login: (req, res) => {
+    let user = req.user;
+    res.redirect("/todos");
   },
 };

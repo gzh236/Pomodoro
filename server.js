@@ -6,6 +6,7 @@ const app = express();
 const methodOverride = require("method-override");
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
+const flash = require("connect-flash");
 const ProgressBar = require("progressbar.js");
 
 const passport = require("passport"),
@@ -20,10 +21,12 @@ const userController = require("./controllers/user-controllers");
 const { ToDoModel } = require("./models/tasks");
 const { UserModel } = require("./models/users");
 
+app.set("view engine", "ejs");
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
-app.set("view engine", "ejs");
+app.use(flash());
 app.use(
   session({
     secret: process.env.SECRET,
@@ -33,6 +36,10 @@ app.use(
   })
 );
 app.use(methodOverride("_method"));
+app.use(function (req, res, next) {
+  res.locals.login = req.isAuthenticated();
+  next();
+});
 
 // passport init
 app.use(passport.initialize());
@@ -79,12 +86,18 @@ passport.use(
 );
 
 function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated()) {
+  if (req.user) {
     return next();
   }
   res.redirect("/");
 }
 
+function alreadyLoggedIn(req, res, next) {
+  if (!req.user) {
+    return next();
+  }
+  res.redirect("/todos");
+}
 // APP ROUTES //
 
 // index
@@ -106,12 +119,12 @@ app.get("/todos/:slug", isLoggedIn, taskController.show);
 app.patch("/todos/:slug", isLoggedIn, taskController.update);
 
 // pause, resume
-app.patch("/todos/:slug/pause", isLoggedIn, taskController.pause);
-app.patch("/todos/:slug/resume", isLoggedIn, taskController.resume);
+app.patch("/todos/:slug/pause", taskController.pause);
+app.patch("/todos/:slug/resume", taskController.resume);
 
 // start
-app.get("/todos/:slug/start", isLoggedIn, taskController.getTimer);
-app.patch("/todos/:slug/start", isLoggedIn, taskController.start);
+app.get("/todos/:slug/start", taskController.getTimer);
+app.patch("/todos/:slug/start", taskController.start);
 
 // edit
 app.get("/todos/:slug/edit", isLoggedIn, taskController.edit);
@@ -124,14 +137,15 @@ app.post(
   "/login",
   passport.authenticate("local", {
     successRedirect: "/todos",
-    failureRedirect: "/login",
-    failureFlash: false,
-  })
+    failureRedirect: "/",
+    failureFlash: true,
+  }),
+  userController.login
 );
 
-app.get("/register", userController.registrationForm);
+app.get("/register", alreadyLoggedIn, userController.registrationForm);
 
-app.post("/", userController.register);
+app.post("/", alreadyLoggedIn, userController.register);
 
 // logout
 app.get("/logout", function (req, res) {
@@ -140,12 +154,16 @@ app.get("/logout", function (req, res) {
 });
 
 mongoose.set("useFindAndModify", false);
-mongoose.set("useCreateIndex", true);
+
 mongoose
-  .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(mongoURI, {
+    useCreateIndex: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then((res) => {
     app.listen(PORT, () => {
-      console.log(`Pomodo-roll listening at port: ${PORT}`);
+      console.log(`Pomodotoro listening at port: ${PORT}`);
     });
   })
   .catch((err) => {

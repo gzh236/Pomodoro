@@ -1,14 +1,11 @@
 <%- include ('./partials/header.ejs') -%>
 
 <div class="container">
-  <% if (tasks.length === 0) { %>
-  <h5 class="add-task-msg">Start adding tasks to your to-do list</h5>
-  <% } %>
-  <h3>To-do list:</h3>
+  <h3 class="todo-list">Your To-do List:</h3>
+
   <table class="table table-borderless table-hover">
     <thead>
       <tr>
-        <th scope="col">Date & Time</th>
         <th scope="col">Task</th>
         <th scope="col">Description</th>
         <th scope="col">Duration</th>
@@ -18,7 +15,6 @@
     <tbody>
       <% tasks.forEach(task => { %>
       <tr>
-        <td><%= task.date %></td>
         <td><%= task.name %></td>
         <td><%= task.description %></td>
         <td><%= Math.round(task.duration) %> minutes</td>
@@ -29,6 +25,10 @@
       <% }) %>
     </tbody>
   </table>
+  <% if (tasks.length === 0) { %>
+  <h2 class="add-task-msg">Start by adding tasks to your to-do list</h2>
+  <% } %>
+
   <form type="GET" action="/todos/new">
     <button
       type="submit"
