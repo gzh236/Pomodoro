@@ -15,11 +15,10 @@ const mongoose = require("mongoose"),
   mongoURI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}`;
 const PORT = process.env.PORT || 3000;
 
-// test
-
 const taskController = require("./controllers/tasks_controllers");
-const ToDoModel = require("./models/tasks");
-const UserModel = require("./models/users");
+const userController = require("./controllers/user-controllers");
+const { ToDoModel } = require("./models/tasks");
+const { UserModel } = require("./models/users");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -41,7 +40,7 @@ app.use(passport.session());
 
 // serialise the user to support login sessions
 passport.serializeUser(function (user, done) {
-  done(null, userid);
+  done(null, user);
 });
 
 // ID deserialised which will be used to find the user (req.user)
@@ -55,7 +54,7 @@ passport.deserializeUser(function (id, done) {
 passport.use(
   new LocalStrategy(function (username, password, done) {
     // find user by username
-    User.findOne({ username: username }, function (err, user) {
+    UserModel.findOne({ username: username }, function (err, user) {
       if (err) {
         return done(err);
       }
@@ -119,30 +118,25 @@ app.get("/todos/:slug/edit", isLoggedIn, taskController.edit);
 
 // USER AUTH ROUTES //
 
-// login-form
-app.get("/", (req, res) => {
-  res.render("user-login");
-});
+app.get("/", userController.loginForm);
 
-// login handled by passportjs
 app.post(
-  "/",
+  "/login",
   passport.authenticate("local", {
     successRedirect: "/todos",
-    failureRedirect: "/",
-    failureFlash: true,
+    failureRedirect: "/login",
+    failureFlash: false,
   })
 );
 
-// register-form
-app.get("/register", (req, res) => {
-  res.render("user-registration");
-});
+app.get("/register", userController.registrationForm);
 
-bcrypt.genSalt(10, function (err, salt) {
-  if (err) {
-    return;
-  }
+app.post("/", userController.register);
+
+// logout
+app.get("/logout", function (req, res) {
+  req.logout();
+  res.redirect("/");
 });
 
 mongoose.set("useFindAndModify", false);
