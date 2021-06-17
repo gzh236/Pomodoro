@@ -8,6 +8,10 @@
   list-style: none;
 }
 
+#showTaskName {
+  font-size: 48px;
+}
+
 #showTaskName,
 #showTaskDescription {
   text-align: center;
