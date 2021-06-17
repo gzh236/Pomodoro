@@ -24,6 +24,15 @@
           resumeBtn.classList.remove('hidden')
         }
 
+        if (remainingTime <= 0 ) {
+          pauseBtn.classList.add('hidden')
+          resumeBtn.classList.add('hidden')
+          let completionMessage = document.createElement('h2')
+          completionMessage.innerText = `Congratulations on focusing and completing the task!`
+          let timerDiv = document.getElementById("pomodoro")
+          timerDiv.appendChild(completionMessage)
+          clearInterval(countdown)
+        }
         let minutes = Math.floor(remainingTime / 60000)
         minutes = minutes < 10 ? "0" + minutes : minutes;
 
@@ -38,13 +47,6 @@
       }
     }, 1000)
 
-    if (remainingTime <= 0 ) {
-      pauseBtn.classList.add('hidden')
-      resumeBtn.classList.add('hidden')
-      let completionMessage = document.createElement('h2')
-      completionMessage.innerText = `Congratulations on focusing and completing the task!`
-      let timerDiv = document.getElementById("pomodoro")
-      timerDiv.appendChild(completionMessage)
-    }
+
   }
 </script>

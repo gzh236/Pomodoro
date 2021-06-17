@@ -138,7 +138,6 @@ app.post(
   passport.authenticate("local", {
     successRedirect: "/todos",
     failureRedirect: "/",
-    failureFlash: true,
   }),
   userController.login
 );
