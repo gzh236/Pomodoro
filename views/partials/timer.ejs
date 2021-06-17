@@ -4,7 +4,7 @@
   let startTime = <%= todoStartTime %>;
   let duration = <%= todoDuration %>;
   let pauseTime = <%= todoPauseTime %>;
-  let timeLeft;
+
 
   let endTime  = startTime + (duration * 60 * 1000)
 
@@ -40,12 +40,11 @@
 
     if (remainingTime <= 0 ) {
       pauseBtn.classList.add('hidden')
-      pauseBtn.classList.add('hidden')
+      resumeBtn.classList.add('hidden')
       let completionMessage = document.createElement('h2')
       completionMessage.innerText = `Congratulations on focusing and completing the task!`
       let timerDiv = document.getElementById("pomodoro")
       timerDiv.appendChild(completionMessage)
-      return
     }
   }
 </script>

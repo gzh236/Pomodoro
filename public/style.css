@@ -14,8 +14,8 @@
   padding: 35px;
 }
 
-.btn-toolbar {
-  text-align: center;
+.btn-group {
+  margin: 20px;
 }
 
 #start-btn,
@@ -39,8 +39,8 @@
 }
 
 .hidden {
-  visibility: hidden;
   max-height: 0;
+  display: none;
 }
 
 .container {
